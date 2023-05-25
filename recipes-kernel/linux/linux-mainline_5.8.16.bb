@@ -33,5 +33,6 @@ SRC_URI = "git://github.com/megous/linux.git;protocol=git;branch=${BRANCH} \
 		file://003-add-original-lichee-pi-zero-lcd-touchscreen.dtsi.patch \
 		file://004-modify-sun8i-v3s-licheepi-zero.dts.patch \
 		file://005-modify-sun8i-v3s-licheepi-zero-dock.dts.patch \
+		file://006-add-sun8i-v3s-sinux-v3.dts.patch \
         file://defconfig \
         "

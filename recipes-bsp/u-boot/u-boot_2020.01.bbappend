@@ -14,7 +14,7 @@ DEFAULT_PREFERENCE_sun8i="1"
 
 SRC_URI = "git://git.denx.de/u-boot.git;branch=master \
            file://boot.cmd \
-	   file://001-zero-dock-dts.patch\
+	   file://001-sinux-v3-dts.patch\
            "
 
 S = "${WORKDIR}/git"

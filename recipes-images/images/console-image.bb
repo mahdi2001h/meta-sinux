@@ -1,4 +1,4 @@
-DESCRIPTION = "A console image for Lichee Pi Zero, Zero-Dock Boards"
+DESCRIPTION = "A console image for Sinux Boards"
 LICENSE = "MIT"
 
 NETWORK_APP = " \
@@ -8,6 +8,10 @@ NETWORK_APP = " \
 IMAGE_LINGUAS = "pl-pl"
 
 inherit core-image
+
+IMAGE_FEATURES += " \
+    splash \
+"
 
 SYSTEM_TOOLS_INSTALL = " \
     i2c-tools \

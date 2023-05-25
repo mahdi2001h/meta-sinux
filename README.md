@@ -1,15 +1,13 @@
-# meta-licheepizero
+# meta-sinux
 
-## Instruction how to build an image for Lichee Pi Zero and Lichee Pi Zero Dock in Yocto
+## Instruction how to build an image for Sinux V3 in Yocto
 
 ### Products:
 
-![Schematic](Lichee_Pi_Zero.png) <br>
-Lichee Pi Zero Version <br>
+![](sinux_v3s_img_top.jpg) <br>
+sinux v3 <br>
 <br>
-![Schematic](Lichee_Pi_Zero_Dock.jpg) <br>
-Lichee Pi Zero Dock Version <br>
-<br>
+
 
 ## General Note:
 Assumed that Linux Ubuntu is installed
@@ -33,46 +31,44 @@ Bluetooth - appears during system boot up <br>
 
 1. First make sure to following packages are installed in system
 
-    ***sudo apt-get install gawk wget git-core diffstat unzip texinfo gcc-multilib build-essential chrpath socat libsdl1.2-dev xterm libmpc-dev libgmp3-dev***
-
-    **Note:**
-    More informations can be found on Yocto reference manual.
+```bash
+sudo apt-get install gawk wget git-core diffstat unzip texinfogcc-multilib build-essential chrpath socat libsdl1.2-dev xtermlibmpc-dev libgmp3-dev
+```
 
 2. Download necessary Yocto packaged listed below. Be sure to be in root of home folder.
 
-	***mkdir yocto***<br>
-	***cd yocto*** <br>
-	***mkdir build*** <br>
-	***git clone git://git.yoctoproject.org/poky --depth 1 -b dunfell*** <br>
-        ***cd poky*** <br>
-	***git clone git://git.openembedded.org/meta-openembedded --depth 1 -b dunfell*** <br>
-	***git clone https://github.com/meta-qt5/meta-qt5.git --depth 1 -b dunfell*** <br>
-	***git clone https://github.com/voloviq/meta-licheepizero --depth 1 -b dunfell*** <br>
+```bash
+mkdir yocto
+cd yocto
+mkdir build 
+git clone git://git.yoctoproject.org/poky --depth 1 -b dunfell
+cd poky
+git clone git://git.openembedded.org/meta-openembedded --depth 1 -b dunfell
+git clone https://github.com/meta-qt5/meta-qt5.git --depth 1 -b dunfell
+git clone https://github.com/voloviq/meta-sinux --depth 1 -b dunfell
+```
 
 3. Select directory to build Linux
+```bash
+source oe-init-build-env ~/yocto/build/sinux_v3
+```
+4. Modify `bblayers.conf` (located in `~/yocto/build/sinux_v3/conf/`)
+```bash
+BBLAYERS ?= " \
+  ${HOME}/yocto/poky/meta \
+  ${HOME}/yocto/poky/meta-poky \
+  ${HOME}/yocto/poky/meta-openembedded/meta-oe \
+  ${HOME}/yocto/poky/meta-openembedded/meta-networking \
+  ${HOME}/yocto/poky/meta-openembedded/meta-python \
+  ${HOME}/yocto/poky/meta-qt5 \
+  ${HOME}/yocto/poky/meta-sinux \
+  "
+```
+**Note:** Please adapt PATH of conf/bblayers.conf if necessary. <br> <br>
 
-    Zero version <br>
-	***source oe-init-build-env ~/yocto/build/licheepizero*** <br>
-    Zero Dock version <br>
-	***source oe-init-build-env ~/yocto/build/licheepizero-dock*** <br>
+5. Modify `local.conf` (located in `~/yocto/build/sinux_v3/conf`) file
 
-4. Modify bblayers.conf(located in ~/yocto/build/licheepizero/conf(or licheepizero-dock/conf))
-
-    *BBLAYERS ?= " \\\
-      ${HOME}/yocto/poky/meta \\\
-      ${HOME}/yocto/poky/meta-poky \\\
-      ${HOME}/yocto/poky/meta-openembedded/meta-oe \\\
-      ${HOME}/yocto/poky/meta-openembedded/meta-networking \\\
-      ${HOME}/yocto/poky/meta-openembedded/meta-python \\\
-      ${HOME}/yocto/poky/meta-qt5 \\\
-      ${HOME}/yocto/poky/meta-licheepizero \\\
-      "*<br>
-
-    **Note:** Please adapt PATH of conf/bblayers.conf if necessary. <br>
-
-5. Modify local.conf(located in ~/yocto/build/licheepizero/conf(or licheepizero-dock/conf)) file
-
-    - modify line with "MACHINE ??" to add "licheepizero-dock" or "licheepizero"
+    - modify line with "MACHINE ??" to add "sinux_v3"
 
     - align *DL_DIR = "${HOME}/yocto/downloads"* <br>
 
@@ -80,66 +76,69 @@ Bluetooth - appears during system boot up <br>
     
     - align *TMPDIR = "${HOME}/yocto/tmp"* <br>
     
-    - add at the end following records <br> <br>
-    	*RM_OLD_IMAGE = "1"* <br>
+    - add at the end following records <br> 
+    *RM_OLD_IMAGE = "1"* <br>
 	*INHERIT += "rm_work"* <br>
 
-    **Note:** Please adapt rest of conf/local.conf parameters if necessary. <br>
+**Note:** Please adapt rest of `conf/local.conf` parameters if necessary. <br>
 
 6. Build objects
+```bash
+#console image
+bitbake console-image
 
-    - console image <br>
-      ***bitbake console-image*** <br>
+#qt5 image
+bitbake qt5-image
 
-    - qt5 image <br>
-      ***bitbake qt5-image*** <br>
-
-    - qt5 toolchain sdk <br>
-      ***bitbake meta-toolchain-qt5*** <br>
-
+#qt5 toolchain sdk
+bitbake meta-toolchain-qt5
+```
 7. After compilation images appears in
 
-    Zero version <br>
-	*~/yocto/tmp/deploy/images/licheepizero* <br>
-    Zero Dock version <br>
-	*~/yocto/tmp/deploy/images/licheepizero-dock* <br>
+	`~/yocto/tmp/deploy/images/sinux_v3` <br> <br>
 
-8. Insert SD CARD into dedicated CARD slot and issue following command to write an image
+
+
+8. Insert SD CARD into dedicated CARD slot and issue following command to   write an image
 
     **Note:** <br>
-    Be 100% sure to provide a valid device name (of=/dev/**sde**). Wrong name "/dev/sde" dameage Your system file ! <br> <br>
-        Zero version <br>
-    	***sudo dd if=~/yocto/tmp/deploy/images/licheepizero/qt5-image-licheepizero.sunxi-sdimg of=/dev/sde bs=1024*** <br>
-    	Zero Dock verison <br>
-    	***sudo dd if=~/yocto/tmp/deploy/images/licheepizero-dock/qt5-image-licheepizero-dock.sunxi-sdimg of=/dev/sde bs=1024*** <br>
+        Be 100% sure to provide a valid device name (of=/dev/**sde**). Wrong    name "/dev/sde" dameage Your system file ! <br>
+    ```bash
+    sudo dd if=~/yocto/tmp/deploy/images/sinux_v3/qt5-image-sinux_v3.sunxi-sdimg    of=/dev/sde bs=1024
+```
+
 
 # Audio<br>
-To play mp3 or ogg files type <br>
-	***mpv ogg-file-name.ogg*** <br>
-	***mpv mp3-file-name.mp3*** <br>
-	***cvlc mp3-file-name.mp3*** <br>
-To change volume <br>
-	***amixer set Headphone 10%+*** <br>
-	***amixer set Headphone 10%-*** <br>
-or just <br>
-	***amixer set Headphone 10%*** <br>
-<br>
-Amixer available options <br>
-	***amixer scontrols*** <br>
-<br>
-Microphone on <br>
-	***amixer -c 0 cset numid=12 2*** <br>
-<br>
-Record some voice from microphone <br>
-	***arecord -D hw:0,0 -d 3 -f S16_LE -r 16000 tmp.wav*** <br>
-<br>
-To get sound device info <br>
-	***ls /dev/snd*** <br>
+audio commands
+```bash
+#To play mp3 or ogg files type
+mpv ogg-file-name.ogg
+mpv mp3-file-name.mp3
+cvlc mp3-file-name.mp3
 
+#To change volume
+amixer set Headphone 10%+
+amixer set Headphone 10%-
+#or just
+amixer set Headphone 10%
+
+#Amixer available options
+amixer scontrols
+
+#Microphone on
+amixer -c 0 cset numid=12 2
+
+#Record some voice from microphone
+arecord -D hw:0,0 -d 3 -f S16_LE -r 16000 tmp.wav
+
+#To get sound device info
+ls /dev/snd
+```
 <br>
+
 # Limitation
 
-	- sunxi_mali is probably not working
-	- rootfs-resize not working (SD CARD size can be resized manualy)
-	- no wiringpi or similar library to driver GPIO in C code
-	- discover problem when WiFi connected to access point (probably some drivers issues), nevertheless WiFi works
+- sunxi_mali is probably not working
+- rootfs-resize not working (SD CARD size can be resized manualy)
+- no wiringpi or similar library to driver GPIO in C code
+- discover problem when WiFi connected to access point (probably somedrivers issues), nevertheless WiFi works

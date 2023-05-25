@@ -1,20 +1,21 @@
 diff --git a/arch/arm/dts/Makefile b/arch/arm/dts/Makefile
-index 20dbc2f..449cbcb 100644
+index 0127a91a82..924fb78127 100644
 --- a/arch/arm/dts/Makefile
 +++ b/arch/arm/dts/Makefile
-@@ -496,7 +496,8 @@ dtb-$(CONFIG_MACH_SUN8I_R40) += \
+@@ -529,7 +529,9 @@ dtb-$(CONFIG_MACH_SUN8I_R40) += \
  	sun8i-r40-bananapi-m2-ultra.dtb \
  	sun8i-v40-bananapi-m2-berry.dtb
  dtb-$(CONFIG_MACH_SUN8I_V3S) += \
 -	sun8i-v3s-licheepi-zero.dtb
 +	sun8i-v3s-licheepi-zero.dtb \
-+	sun8i-v3s-licheepi-zero-dock.dtb
++	sun8i-v3s-licheepi-zero-dock.dtb \
++	sun8i-v3s-sinux-v3.dtb
  dtb-$(CONFIG_MACH_SUN50I_H5) += \
  	sun50i-h5-bananapi-m2-plus.dtb \
  	sun50i-h5-emlid-neutis-n5-devboard.dtb \
-diff --git b/arch/arm/dts/sun8i-v3s-licheepi-zero-dock.dts b/arch/arm/dts/sun8i-v3s-licheepi-zero-dock.dts
+diff --git a/arch/arm/dts/sun8i-v3s-licheepi-zero-dock.dts b/arch/arm/dts/sun8i-v3s-licheepi-zero-dock.dts
 new file mode 100644
-index 0000000..a044c4c
+index 0000000000..a044c4cc05
 --- /dev/null
 +++ b/arch/arm/dts/sun8i-v3s-licheepi-zero-dock.dts
 @@ -0,0 +1,103 @@
@@ -122,10 +123,10 @@ index 0000000..a044c4c
 +  status = "okay";
 +};
 diff --git a/arch/arm/dts/sun8i-v3s-licheepi-zero.dts b/arch/arm/dts/sun8i-v3s-licheepi-zero.dts
-index 3d9168c..00bad4d 100644
+index 3d9168cbae..ceeb4280f5 100644
 --- a/arch/arm/dts/sun8i-v3s-licheepi-zero.dts
 +++ b/arch/arm/dts/sun8i-v3s-licheepi-zero.dts
-@@ -49,25 +49,105 @@
+@@ -49,25 +49,127 @@
  	compatible = "licheepi,licheepi-zero", "allwinner,sun8i-v3s";
  
  	aliases {
@@ -187,8 +188,30 @@ index 3d9168c..00bad4d 100644
 +
 +&de {
 +	status = "okay";
++};
++
++
++&spi0 {
++	status = "okay";
++
++	spi-nor@0 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0>;
++		compatible = "winbond,w25q128", "jedec,spi-nor";
++		spi-max-frequency = <50000000>;
++	};
++
++	spi-nand@1 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0>;
++		compatible = "spi-nand";
++		spi-max-frequency = <50000000>;
++	};
  };
  
++
  &mmc0 {
 -	pinctrl-0 = <&mmc0_pins_a>;
 -	pinctrl-names = "default";
@@ -234,7 +257,7 @@ index 3d9168c..00bad4d 100644
  	pinctrl-names = "default";
  	status = "okay";
  };
-@@ -78,6 +158,6 @@
+@@ -78,6 +180,6 @@
  };
  
  &usbphy {
@@ -242,8 +265,189 @@ index 3d9168c..00bad4d 100644
 +	usb0_id_det-gpios = <&pio 5 6 GPIO_ACTIVE_HIGH>;
  	status = "okay";
  };
+diff --git a/arch/arm/dts/sun8i-v3s-sinux-v3.dts b/arch/arm/dts/sun8i-v3s-sinux-v3.dts
+new file mode 100644
+index 0000000000..1fccfe7feb
+--- /dev/null
++++ b/arch/arm/dts/sun8i-v3s-sinux-v3.dts
+@@ -0,0 +1,175 @@
++/*
++ * Copyright (C) 2023 mahdi hamzeh <mahdi2001h@gmail.com>
++ *
++ * This file is dual-licensed: you can use it either under the terms
++ * of the GPL or the X11 license, at your option. Note that this dual
++ * licensing only applies to this file, and not this project as a
++ * whole.
++ *
++ *  a) This file is free software; you can redistribute it and/or
++ *     modify it under the terms of the GNU General Public License as
++ *     published by the Free Software Foundation; either version 2 of the
++ *     License, or (at your option) any later version.
++ *
++ *     This file is distributed in the hope that it will be useful,
++ *     but WITHOUT ANY WARRANTY; without even the implied warranty of
++ *     MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
++ *     GNU General Public License for more details.
++ *
++ * Or, alternatively,
++ *
++ *  b) Permission is hereby granted, free of charge, to any person
++ *     obtaining a copy of this software and associated documentation
++ *     files (the "Software"), to deal in the Software without
++ *     restriction, including without limitation the rights to use,
++ *     copy, modify, merge, publish, distribute, sublicense, and/or
++ *     sell copies of the Software, and to permit persons to whom the
++ *     Software is furnished to do so, subject to the following
++ *     conditions:
++ *
++ *     The above copyright notice and this permission notice shall be
++ *     included in all copies or substantial portions of the Software.
++ *
++ *     THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
++ *     EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
++ *     OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
++ *     NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT
++ *     HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
++ *     WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
++ *     FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR
++ *     OTHER DEALINGS IN THE SOFTWARE.
++ */
++
++/dts-v1/;
++#include "sun8i-v3s.dtsi"
++#include "sunxi-common-regulators.dtsi"
++
++/ {
++	model = "Sinux V3";
++	compatible = "sinux,sinux-v3", "allwinner,sun8i-v3s";
++
++	aliases {
++		ethernet0 = &emac;
++		serial0 = &uart0;
++	};
++
++	backlight: backlight {
++		compatible = "pwm-backlight";
++		pwms = <&pwm 0 50000 0>;
++		brightness-levels = <0 10 20 30 40 50 60 70 80 90 100>;
++		default-brightness-level = <8>;
++		status = "disabled";
++	};
++
++	chosen {
++		stdout-path = "serial0:115200n8";
++	};
++
++	leds {
++		compatible = "gpio-leds";
++
++		green_led {
++			label = "sinux:green:usr";
++			gpios = <&pio 2 5 GPIO_ACTIVE_LOW>; /* PB5 */
++			linux,default-trigger = "mmc0";
++		};
++
++
++	};
++	panel: panel {
++		compatible = "rocktech,rk070er9427", "simple-panel";
++		enable-gpios = <&pio 1 4 GPIO_ACTIVE_HIGH>; /* Should be backlight */
++		#address-cells = <1>;
++		#size-cells = <0>;
++
++		port@0 {
++			reg = <0>;
++			#address-cells = <1>;
++			#size-cells = <0>;
++
++			panel_input: endpoint@0 {
++				reg = <0>;
++				remote-endpoint = <&tcon0_out_lcd>;
++			};
++		};
++	};
++};
++
++&de {
++	status = "okay";
++};
++
++
++&spi0 {
++	status = "okay";
++
++	spi-nor@0 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0>;
++		compatible = "winbond,w25q128", "jedec,spi-nor";
++		spi-max-frequency = <50000000>;
++	};
++
++	spi-nand@1 {
++		#address-cells = <1>;
++		#size-cells = <1>;
++		reg = <0>;
++		compatible = "spi-nand";
++		spi-max-frequency = <50000000>;
++	};
++};
++
++
++&mmc0 {
++	broken-cd;
++	bus-width = <4>;
++	vmmc-supply = <&reg_vcc3v3>;
++	status = "okay";
++};
++
++&tcon0 {
++	pinctrl-names = "default";
++	pinctrl-0 = <&lcd_rgb666_pins>;
++	status = "okay";
++
++};
++
++&tcon0_out {
++	tcon0_out_lcd: endpoint@0 {
++		reg = <0>;
++		remote-endpoint = <&panel_input>;
++	};
++};
++
++&pwm {
++	pinctrl-0 = <&pwm0_pins>;
++	pinctrl-names = "default";
++	status = "ok";
++};
++
++&i2c0 {
++	status = "okay";
++	ns2009: touchscreen@48 {
++		compatible = "nsiway,ns2009";
++		reg = <0x48>;
++		touchscreen-fuzz-x = <8>;
++		touchscreen-fuzz-y = <8>;
++	};
++};
++
++&uart0 {
++	pinctrl-0 = <&uart0_pb_pins>;
++	pinctrl-names = "default";
++	status = "okay";
++};
++
++&usb_otg {
++	dr_mode = "otg";
++	status = "okay";
++};
++
++&usbphy {
++	usb0_id_det-gpios = <&pio 5 6 GPIO_ACTIVE_HIGH>;
++	status = "okay";
++};
 diff --git a/arch/arm/dts/sun8i-v3s.dtsi b/arch/arm/dts/sun8i-v3s.dtsi
-index ebefc0f..1b3b18e 100644
+index ebefc0fefe..1b3b18e80a 100644
 --- a/arch/arm/dts/sun8i-v3s.dtsi
 +++ b/arch/arm/dts/sun8i-v3s.dtsi
 @@ -40,10 +40,9 @@
@@ -640,9 +844,125 @@ index ebefc0f..1b3b18e 100644
  			reg = <0x01c81000 0x1000>,
  			      <0x01c82000 0x1000>,
  			      <0x01c84000 0x2000>,
-diff --git b/configs/LicheePi_Zero_Dock_defconfig b/configs/LicheePi_Zero_Dock_defconfig
+diff --git a/arch/arm/mach-sunxi/Kconfig b/arch/arm/mach-sunxi/Kconfig
+index 16d41b83af..c15af14c3f 100644
+--- a/arch/arm/mach-sunxi/Kconfig
++++ b/arch/arm/mach-sunxi/Kconfig
+@@ -993,7 +993,7 @@ config SPL_STACK_R_ADDR
+ 
+ config SPL_SPI_SUNXI
+ 	bool "Support for SPI Flash on Allwinner SoCs in SPL"
+-	depends on MACH_SUN4I || MACH_SUN5I || MACH_SUN7I || MACH_SUNXI_H3_H5 || MACH_SUN50I
++	depends on MACH_SUN4I || MACH_SUN5I || MACH_SUN7I || MACH_SUNXI_H3_H5 || MACH_SUN50I || MACH_SUN8I
+ 	help
+ 	  Enable support for SPI Flash. This option allows SPL to read from
+ 	  sunxi SPI Flash. It uses the same method as the boot ROM, so does
+diff --git a/arch/arm/mach-sunxi/spl_spi_sunxi.c b/arch/arm/mach-sunxi/spl_spi_sunxi.c
+index 043d9f6ead..065e369d7b 100644
+--- a/arch/arm/mach-sunxi/spl_spi_sunxi.c
++++ b/arch/arm/mach-sunxi/spl_spi_sunxi.c
+@@ -1,13 +1,13 @@
+-// SPDX-License-Identifier: GPL-2.0+
+ /*
+  * Copyright (C) 2016 Siarhei Siamashka <siarhei.siamashka@gmail.com>
++ *
++ * SPDX-License-Identifier:	GPL-2.0+
+  */
+ 
+ #include <common.h>
+ #include <spl.h>
+ #include <asm/gpio.h>
+ #include <asm/io.h>
+-#include <linux/libfdt.h>
+ 
+ #ifdef CONFIG_SPL_OS_BOOT
+ #error CONFIG_SPL_OS_BOOT is not supported yet
+@@ -185,14 +185,14 @@ static void spi0_deinit(void)
+ #define SPI_READ_MAX_SIZE 60 /* FIFO size, minus 4 bytes of the header */
+ 
+ static void sunxi_spi0_read_data(u8 *buf, u32 addr, u32 bufsize,
+-				 ulong spi_ctl_reg,
+-				 ulong spi_ctl_xch_bitmask,
+-				 ulong spi_fifo_reg,
+-				 ulong spi_tx_reg,
+-				 ulong spi_rx_reg,
+-				 ulong spi_bc_reg,
+-				 ulong spi_tc_reg,
+-				 ulong spi_bcc_reg)
++				 u32 spi_ctl_reg,
++				 u32 spi_ctl_xch_bitmask,
++				 u32 spi_fifo_reg,
++				 u32 spi_tx_reg,
++				 u32 spi_rx_reg,
++				 u32 spi_bc_reg,
++				 u32 spi_tc_reg,
++				 u32 spi_bcc_reg)
+ {
+ 	writel(4 + bufsize, spi_bc_reg); /* Burst counter (total bytes) */
+ 	writel(4, spi_tc_reg);           /* Transfer counter (bytes to send) */
+@@ -261,51 +261,28 @@ static void spi0_read_data(void *buf, u32 addr, u32 len)
+ 	}
+ }
+ 
+-static ulong spi_load_read(struct spl_load_info *load, ulong sector,
+-			   ulong count, void *buf)
+-{
+-	spi0_read_data(buf, sector, count);
+-
+-	return count;
+-}
+-
+ /*****************************************************************************/
+ 
+ static int spl_spi_load_image(struct spl_image_info *spl_image,
+ 			      struct spl_boot_device *bootdev)
+ {
+-	int ret = 0;
++	int err;
+ 	struct image_header *header;
+ 	header = (struct image_header *)(CONFIG_SYS_TEXT_BASE);
+ 
+ 	spi0_init();
+ 
+ 	spi0_read_data((void *)header, CONFIG_SYS_SPI_U_BOOT_OFFS, 0x40);
++	err = spl_parse_image_header(spl_image, header);
++	if (err)
++		return err;
+ 
+-        if (IS_ENABLED(CONFIG_SPL_LOAD_FIT) &&
+-		image_get_magic(header) == FDT_MAGIC) {
+-		struct spl_load_info load;
+-
+-		debug("Found FIT image\n");
+-		load.dev = NULL;
+-		load.priv = NULL;
+-		load.filename = NULL;
+-		load.bl_len = 1;
+-		load.read = spi_load_read;
+-		ret = spl_load_simple_fit(spl_image, &load,
+-					  CONFIG_SYS_SPI_U_BOOT_OFFS, header);
+-	} else {
+-		ret = spl_parse_image_header(spl_image, header);
+-		if (ret)
+-			return ret;
+-
+-		spi0_read_data((void *)spl_image->load_addr,
+-			       CONFIG_SYS_SPI_U_BOOT_OFFS, spl_image->size);
+-	}
++	spi0_read_data((void *)spl_image->load_addr, CONFIG_SYS_SPI_U_BOOT_OFFS,
++		       spl_image->size);
+ 
+ 	spi0_deinit();
+-
+-	return ret;
++	return 0;
+ }
+ /* Use priorty 0 to override the default if it happens to be linked in */
+ SPL_LOAD_IMAGE_METHOD("sunxi SPI", 0, BOOT_DEVICE_SPI, spl_spi_load_image);
++
+diff --git a/configs/LicheePi_Zero_Dock_defconfig b/configs/LicheePi_Zero_Dock_defconfig
 new file mode 100644
-index 0000000..0eaee8d
+index 0000000000..0eaee8d777
 --- /dev/null
 +++ b/configs/LicheePi_Zero_Dock_defconfig
 @@ -0,0 +1,13 @@
@@ -657,5 +977,24 @@ index 0000000..0eaee8d
 +# CONFIG_SPL_DOS_PARTITION is not set
 +# CONFIG_SPL_EFI_PARTITION is not set
 +CONFIG_DEFAULT_DEVICE_TREE="sun8i-v3s-licheepi-zero-dock"
++# CONFIG_NETDEVICES is not set
++CONFIG_SYS_USB_EVENT_POLL_VIA_INT_QUEUE=y
+diff --git a/configs/Sinux_V3_defconfig b/configs/Sinux_V3_defconfig
+new file mode 100644
+index 0000000000..a9bbf6d2b2
+--- /dev/null
++++ b/configs/Sinux_V3_defconfig
+@@ -0,0 +1,13 @@
++CONFIG_ARM=y
++CONFIG_ARCH_SUNXI=y
++CONFIG_NR_DRAM_BANKS=1
++CONFIG_SPL=y
++CONFIG_MACH_SUN8I_V3S=y
++CONFIG_DRAM_CLK=360
++CONFIG_SPL_TEXT_BASE=0x60
++# CONFIG_CMD_FLASH is not set
++# CONFIG_SPL_DOS_PARTITION is not set
++# CONFIG_SPL_EFI_PARTITION is not set
++CONFIG_DEFAULT_DEVICE_TREE="sun8i-v3s-sinux-v3"
 +# CONFIG_NETDEVICES is not set
 +CONFIG_SYS_USB_EVENT_POLL_VIA_INT_QUEUE=y
