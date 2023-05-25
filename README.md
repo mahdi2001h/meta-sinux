@@ -103,13 +103,15 @@ bitbake meta-toolchain-qt5
 
     **Note:** <br>
         Be 100% sure to provide a valid device name (of=/dev/**sde**). Wrong    name "/dev/sde" dameage Your system file ! <br>
-    ```bash
-    sudo dd if=~/yocto/tmp/deploy/images/sinux_v3/qt5-image-sinux_v3.sunxi-sdimg    of=/dev/sde bs=1024
-```
+   	```bash
+  	  sudo dd if=~/yocto/tmp/deploy/images/sinux_v3/qt5-image-sinux_v3.sunxi-sdimg    of=/dev/sde bs=1024
+	```
 
 
 # Audio
+
 audio commands
+
 ```bash
 #To play mp3 or ogg files type
 mpv ogg-file-name.ogg
