@@ -45,7 +45,7 @@ git clone git://git.yoctoproject.org/poky --depth 1 -b dunfell
 cd poky
 git clone git://git.openembedded.org/meta-openembedded --depth 1 -b dunfell
 git clone https://github.com/meta-qt5/meta-qt5.git --depth 1 -b dunfell
-git clone https://github.com/voloviq/meta-sinux --depth 1 -b dunfell
+git clone https://github.com/mahdi2001h/meta-sinux --depth 1 -b dunfell
 ```
 
 3. Select directory to build Linux
@@ -108,7 +108,7 @@ bitbake meta-toolchain-qt5
 ```
 
 
-# Audio<br>
+# Audio
 audio commands
 ```bash
 #To play mp3 or ogg files type
