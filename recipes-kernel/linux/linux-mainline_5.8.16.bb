@@ -27,7 +27,7 @@ PV = "5.8.16"
 
 SRC_URI[sha256sum] = "4622bf77bb58d316ad939296667802e4da5fee3eeb6c4885c79f2f85503d5852"
 
-SRC_URI = "git://github.com/megous/linux.git;protocol=git;branch=${BRANCH} \
+SRC_URI = "git://github.com/mahdi2001h/linux.git;protocol=git;branch=${BRANCH} \
 		file://001-modify-sun8i-v3s.dtsi.patch \
 		file://002-add-original-lichee-pi-zero-lcd-display.dtsi.patch \
 		file://003-add-original-lichee-pi-zero-lcd-touchscreen.dtsi.patch \
